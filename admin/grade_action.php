@@ -47,6 +47,53 @@ if(isset($_POST["action"])) {
         
         echo json_encode($output);
     }
+    if($_POST["action"] == 'Add' || $_POST["action"] == 'Edit') {
+        $grade_name = '';
+        $error_grade_name = '';
+        $error = 0;
+        if(empty($_POST["grade_name"])) {
+            $error_grade_name = 'Grade Name is required';
+            $error++;
+        }
+        else {
+            $grade_name = $_POST["grade_name"];
+        }
+        if($error > 0) {
+            $output = array(
+                'error'             => true,
+                'error_grade_name'  => $error_grade_name
+            );
+        }
+        else { // No valdiation error
+            if($_POST["action"] == "Add") {
+                $data = array(
+                    ':grade_name'           => $grade_name
+                );
+                $query = "
+                INSERT INTO tbl_grade(grade_name)
+                SELECT * FROM (SELECT :grade_name) as temp
+                WHERE NOT EXISTS (
+                    SELECT grade_name FROM tbl_grade WHERE grade_name = :grade_name
+                ) LIMIT 1
+                ";
+                $statement = $connect->prepare($query);
+                if($statement->execute($data)) {
+                    if($statement->rowCount() > 0) {
+                        $output = array(
+                            'success'       => 'Data Added Successfully'
+                        );
+                    }
+                    else {
+                        $output = array(
+                            'error'             => true,
+                            'error_grade_name'  => 'Grade Name Already Exists'
+                        );
+                    }
+                }
+
+            }
+        }
+    }
 }
 
 ?>
