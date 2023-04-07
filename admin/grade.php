@@ -9,7 +9,7 @@ include('header.php');
         <div class="card-header">
             <div class="row">
                 <div class="col-md-9">Grade List</div>
-                <div class="col-md-3" align="right">
+                <div class="col-md-3" align ="right">
 
                 </div>
             </div>
@@ -39,7 +39,7 @@ include('header.php');
     $(document).ready(function(){
         var dataTable = $('#grade_table').DataTable({
             "processing": true,
-            "serverside": true,
+            "serverSide": true,
             "order": [],
             "ajax": {
                 url: "grade_action.php",
